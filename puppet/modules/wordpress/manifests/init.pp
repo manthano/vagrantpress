@@ -31,13 +31,13 @@ class wordpress::install {
   
   exec { 'create-wp-subdir':
     cwd     => '/vagrant/wordpress',
-    command => 'mkdir core',
+    command => '/bin/mkdir core',
     creates => 'vagrant/wordpress/core',
   }
   
   exec { 'move-wordpress':
     cwd     => '/vagrant/wordpress',
-    command => 'mv * core',
+    command => '/bin/mv * core',
     require => 'Exec['create-wp-subdir'],
     creates => 'vagrant/wordpress/core/wp-content'
   }
@@ -48,7 +48,7 @@ class wordpress::install {
   
   exec { 'update-wp-index':
     cwd     => '/vagrant/wordpress',
-    command => ' sed -i "s/wp-blog-header/core\/wp-blog-header/"',
+    command => '/bin/sed -i "s/wp-blog-header/core\/wp-blog-header/"',
     require => 'Exec['move-wordpress'],
   }
 
