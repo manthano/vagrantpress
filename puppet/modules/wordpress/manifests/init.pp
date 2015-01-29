@@ -29,16 +29,10 @@ class wordpress::install {
     creates => '/vagrant/wordpress',
   }
   
-  exec { 'create-wp-subdir':
-    cwd     => '/vagrant/wordpress',
-    command => '/bin/mkdir core',
-    creates => 'vagrant/wordpress/core',
-  }
-  
   exec { 'move-wordpress':
     cwd     => '/vagrant/wordpress',
-    command => '/bin/mv * core',
-    require => 'Exec['create-wp-subdir'],
+    command => '/bin/mkdir core; /bin/mv * core',
+    require => 'Exec['untar-wordpress'],
     creates => 'vagrant/wordpress/core/wp-content'
   }
   
