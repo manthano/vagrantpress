@@ -28,36 +28,33 @@ class wordpress::install {
     require => Exec['download-wordpress'],
     creates => '/vagrant/wordpress',
   }
-
-  # Import a MySQL database for a basic wordpress site.
-  file { '/tmp/wordpress-db.sql':
-    source => 'puppet:///modules/wordpress/wordpress-db.sql'
+  
+  exec { 'create-wp-subdir':
+    cwd     => '/vagrant/wordpress',
+    command => 'mkdir core',
+    creates => 'vagrant/wordpress/core',
   }
-
-  exec { 'load-db':
-    command => '/usr/bin/mysql -u wordpress -pwordpress wordpress < /tmp/wordpress-db.sql && touch /home/vagrant/db-created',
-    creates => '/home/vagrant/db-created',
+  
+  exec { 'move-wordpress':
+    cwd     => '/vagrant/wordpress',
+    command => 'mv * core',
+    require => 'Exec['create-wp-subdir'],
+    creates => 'vagrant/wordpress/core/wp-content'
+  }
+  
+  file { '/vagrant/wordpress/index.php':
+    source  => '/vagrant/wordpress/core/index.php',
+  }
+  
+  exec { 'update-wp-index':
+    cwd     => '/vagrant/wordpress',
+    command => ' sed -i "s/wp-blog-header/core\/wp-blog-header/"',
+    require => 'Exec['move-wordpress'],
   }
 
   # Copy a working wp-config.php file for the vagrant setup.
-  file { '/vagrant/wordpress/wp-config.php':
+  file { '/vagrant/wordpress/core/wp-config.php':
     source => 'puppet:///modules/wordpress/wp-config.php'
   }
   
-   # Create the Wordpress Unit Tests database
-  exec { 'create-tests-database':
-    unless  => '/usr/bin/mysql -u root -pvagrant wp_tests',
-    command => '/usr/bin/mysql -u root -pvagrant --execute=\'create database wp_tests\'',
-  }
-
-  exec { 'create-tests-user':
-    unless  => '/usr/bin/mysql -u wordpress -pwordpress',
-    command => '/usr/bin/mysql -u root -pvagrant --execute="GRANT ALL PRIVILEGES ON wp_tests.* TO \'wordpress\'@\'localhost\' IDENTIFIED BY \'wordpress\'"',
-  }
-
-  # Copy a working wp-tests-config.php file for the vagrant setup.
-  file { '/vagrant/wordpress/wp-tests-config.php':
-    source  => 'puppet:///modules/wordpress/wp-tests-config.php',
-	require => Exec['untar-wordpress'],
-  }
 }
