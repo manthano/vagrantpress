@@ -32,8 +32,8 @@ class wordpress::install {
   exec { 'move-wordpress':
     cwd     => '/vagrant/wordpress',
     command => '/bin/mkdir core; /bin/mv * core',
-    require => 'Exec['untar-wordpress'],
-    creates => 'vagrant/wordpress/core/wp-content'
+    require => Exec['untar-wordpress'],
+    creates => '/cd vagrant/wordpress/core/wp-content'
   }
   
   file { '/vagrant/wordpress/index.php':
@@ -42,8 +42,7 @@ class wordpress::install {
   
   exec { 'update-wp-index':
     cwd     => '/vagrant/wordpress',
-    command => '/bin/sed -i "s/wp-blog-header/core\/wp-blog-header/"',
-    require => 'Exec['move-wordpress'],
+    command => '/bin/sed -i "s/wp-blog-header/core\/wp-blog-header/" index.php',
   }
 
   # Copy a working wp-config.php file for the vagrant setup.
