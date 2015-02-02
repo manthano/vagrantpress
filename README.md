@@ -1,12 +1,12 @@
 # VagrantPress
 
 *VagrantPress* is a packaged development environment for developing WordPress themes and plugins.  
-[chadthompson] initially created this project to aid in developing child modules for a WordPress blog. I modified it to use a private ip (rather than a port), move WordPress into a subdirectory, and remove some components I didn't want/need.
+[chadthompson] initially created this project to aid in developing child modules for a WordPress blog. I modified it to make it more friendly in a Windows/Hyper-V environment, use a private ip (rather than a port), move WordPress into a subdirectory, and remove some components I didn't want/need.
 
 # What's Installed
 
 + Ubuntu Trusty (14.04)
-+ Wordpress 4.0
++ Latest version of WordPress
 + Mysql
 + Php
 + Phpmyadmin
@@ -30,6 +30,7 @@
 
 + [Vagrant](http://www.vagrantup.com/downloads.html)
 + [Virtualbox](https://www.virtualbox.org/wiki/Downloads)
++ OR Hyper-V
 
 ## Getting Started
 
